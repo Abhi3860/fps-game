@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://di30fl1bkvrhk"]
+
+[ext_resource type="Script" uid="uid://bgcnm2x1p1jiu" path="res://scripts/weapon_data.gd" id="1_7vy5u"]
+[ext_resource type="PackedScene" uid="uid://wac1g3p62jw6" path="res://Scenes/Bullet.tscn" id="1_wcgjp"]
+
+[resource]
+script = ExtResource("1_7vy5u")
+projectile_scene = ExtResource("1_wcgjp")
+fire_rate = 0.5
+magazine_size = 6
+metadata/_custom_type_script = "uid://bgcnm2x1p1jiu"

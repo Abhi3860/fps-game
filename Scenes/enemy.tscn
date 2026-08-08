@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://bsexs6dknmn1w"]
+
+[ext_resource type="Script" uid="uid://c4qtdsnsr2skg" path="res://Scenes/enemy.gd" id="1_hghv2"]
+[ext_resource type="PackedScene" uid="uid://da57lj7wpdxq0" path="res://Scenes/enemybullet.tscn" id="2_1f0kj"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ne65n"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hghv2"]
+
+[node name="Enemy" type="CharacterBody3D" groups=["enemy"]]
+script = ExtResource("1_hghv2")
+projectile_scene = ExtResource("2_1f0kj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_ne65n")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.075, 0, 0, 0, 1.075, 0, 0, 0, 1.075, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_hghv2")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66956913, -0.58)

@@ -1,0 +1,75 @@
+[gd_scene load_steps=11 format=3 uid="uid://wac1g3p62jw6"]
+
+[ext_resource type="Script" uid="uid://vf50n0cwra24" path="res://Scenes/bullet.gd" id="1_vlxeq"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_14k46"]
+
+[sub_resource type="Gradient" id="Gradient_vlxeq"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_14k46"]
+gradient = SubResource("Gradient_vlxeq")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qvus8"]
+lifetime_randomness = 0.1
+gravity = Vector3(0, 0, 0)
+scale_max = 10.0
+color_ramp = SubResource("GradientTexture1D_14k46")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pypll"]
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.8227463, 0.8227464, 0, 1)
+emission_enabled = true
+emission = Color(0.8235294, 0.8235294, 0, 1)
+emission_energy_multiplier = 16.0
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+use_particle_trails = true
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_vg3fc"]
+material = SubResource("StandardMaterial3D_pypll")
+shape = 0
+size = 0.05
+sections = 3
+section_length = 0.05
+section_segments = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vlxeq"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.7920673, 0.7919064, 3.85046e-07, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vlxeq"]
+material = SubResource("StandardMaterial3D_vlxeq")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qvus8"]
+radius = 0.4946289
+height = 0.9892578
+
+[node name="Bullet" type="Area3D"]
+script = ExtResource("1_vlxeq")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.05, 0, 0, 0, -2.1855695e-09, -0.05, 0, 0.05, -2.1855695e-09, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_14k46")
+
+[node name="Tracer" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.002495807, 0.9999969, 0, -0.9999969, -0.002495807, 0, 0, 0.11619197)
+amount = 30
+lifetime = 0.3
+visibility_aabb = AABB(-50, -50, -50, 100, 100, 100)
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_qvus8")
+draw_pass_1 = SubResource("RibbonTrailMesh_vg3fc")
+
+[node name="meshtracer" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.015, 0, 0, 0, 0.015, 0, 0, 0, 0.30080625, 0, 0, 0.16467987)
+visible = false
+mesh = SubResource("BoxMesh_vlxeq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.057, 0, 0, 0, -6.556712e-09, -0.057, 0, 0.15, -2.4915505e-09, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_qvus8")

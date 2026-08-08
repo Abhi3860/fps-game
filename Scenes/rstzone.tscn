@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkb18admxxoux"]
+
+[ext_resource type="Script" uid="uid://dwyobw1kp0wpv" path="res://Scenes/rstzone.gd" id="1_gfs4y"]
+
+[node name="Area3D" type="Area3D"]
+script = ExtResource("1_gfs4y")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

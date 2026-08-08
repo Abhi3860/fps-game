@@ -1,0 +1,84 @@
+[gd_scene load_steps=13 format=3 uid="uid://7bq5lroe5dmf"]
+
+[ext_resource type="Script" uid="uid://d1mmh8wtiky1t" path="res://character_body_3d.gd" id="1_ay717"]
+[ext_resource type="PackedScene" uid="uid://wac1g3p62jw6" path="res://Scenes/Bullet.tscn" id="2_4d1w0"]
+[ext_resource type="Script" uid="uid://c3qltgjep6urm" path="res://Scenes/hud.gd" id="2_rjfhe"]
+[ext_resource type="Resource" uid="uid://di30fl1bkvrhk" path="res://resources/revolver.tres" id="3_ym4m7"]
+[ext_resource type="Script" uid="uid://bgcnm2x1p1jiu" path="res://scripts/weapon_data.gd" id="4_uydtg"]
+[ext_resource type="Resource" uid="uid://ceqg0mqckr5lu" path="res://resources/shotgun.tres" id="5_ljijv"]
+[ext_resource type="Resource" uid="uid://bvbxum5vqljoa" path="res://resources/smg.tres" id="6_ljijv"]
+[ext_resource type="Resource" uid="uid://3qqbyah8wcnl" path="res://resources/rifle.tres" id="7_5mj7n"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ay717"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ay717"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mj7n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rgyn1"]
+bg_color = Color(0.733002, 2.7554854e-06, 6.738305e-07, 1)
+
+[node name="Player" type="CharacterBody3D" groups=["player"]]
+script = ExtResource("1_ay717")
+projectile_scene = ExtResource("2_4d1w0")
+current_weapon = ExtResource("3_ym4m7")
+weapon_inventory = Array[ExtResource("4_uydtg")]([ExtResource("3_ym4m7"), ExtResource("5_ljijv"), ExtResource("6_ljijv"), ExtResource("7_5mj7n")])
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+
+[node name="Hand" type="MeshInstance3D" parent="Head"]
+transform = Transform3D(0.19654231, 0, 0, 0, -1.3765974e-08, 0.18861388, 0, -0.3149288, -8.244575e-09, -0.5045409, -0.30162942, -0.3192109)
+mesh = SubResource("CapsuleMesh_ay717")
+
+[node name="Muzzle" type="Marker3D" parent="Head/Hand"]
+transform = Transform3D(1, 0, 0, 0, 1, -1.7763568e-15, 0, 0, 1, 0, 1.0538929, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_ay717")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("2_rjfhe")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 15)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_5mj7n")
+theme_override_styles/fill = SubResource("StyleBoxFlat_rgyn1")
+show_percentage = false
+
+[node name="DashContainer" type="HBoxContainer" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer2" type="MarginContainer" parent="HUD"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="AmmoLabel" type="Label" parent="HUD/MarginContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
