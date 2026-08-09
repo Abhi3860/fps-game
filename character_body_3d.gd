@@ -43,6 +43,7 @@ var current_weapon_index: int = 0
 var current_weapon2: WeaponData 
 var weapon_ammo: Array[int] = []
 @onready var muzzle: Marker3D = $Head/Hand/Muzzle
+@onready var parry_zone: Area3D = $ParryZone
 
 
 var attack_cooldown_timer: float = 0.0
@@ -111,6 +112,7 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	handle_attack_input()
+	handle_parry_input()
 # dash
 
 func handle_dash_input() -> void:
@@ -297,3 +299,28 @@ func take_damage(amount: float) -> void:
 func die() -> void:
 	
 	get_tree().reload_current_scene()
+
+func handle_parry_input() -> void:
+	if Input.is_action_just_pressed("parry"):
+		var parried_something = false
+		var areas = parry_zone.get_overlapping_areas()
+		
+		for area in areas:
+			print("Detected: ", area.name, " | Has parry method?: ", area.has_method("parry"))
+			
+		# Scan all areas currently inside the spherical ParryZone
+		for area in parry_zone.get_overlapping_areas():
+			# Check if the area is a bullet that hasn't been parried yet
+			if area.has_method("parry") and not area.get("is_parried"):
+				
+				# Get the exact forward direction of the camera
+				var parry_dir = -camera.global_transform.basis.z.normalized()
+				
+				# Call the parry function on the bullet and pass the camera direction
+				area.parry(parry_dir)
+				parried_something = true
+		
+		if parried_something:
+			# Reward the player for a successful parry by instantly resetting their dashes!
+			current_dashes = max_dashes
+			dashes_updated.emit(current_dashes, max_dashes)

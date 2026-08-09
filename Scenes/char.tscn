@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://7bq5lroe5dmf"]
+[gd_scene load_steps=14 format=3 uid="uid://7bq5lroe5dmf"]
 
 [ext_resource type="Script" uid="uid://d1mmh8wtiky1t" path="res://character_body_3d.gd" id="1_ay717"]
 [ext_resource type="PackedScene" uid="uid://wac1g3p62jw6" path="res://Scenes/Bullet.tscn" id="2_4d1w0"]
@@ -17,6 +17,8 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rgyn1"]
 bg_color = Color(0.733002, 2.7554854e-06, 6.738305e-07, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5mj7n"]
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
 script = ExtResource("1_ay717")
@@ -82,3 +84,9 @@ theme_override_constants/margin_bottom = 40
 [node name="AmmoLabel" type="Label" parent="HUD/MarginContainer2"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
+
+[node name="ParryZone" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParryZone"]
+transform = Transform3D(4.955, 0, 0, 0, 4.955, 0, 0, 0, 4.955, 0, 0, 0)
+shape = SubResource("SphereShape3D_5mj7n")
