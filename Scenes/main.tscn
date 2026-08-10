@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://413tu8s7prah"]
+[gd_scene load_steps=6 format=3 uid="uid://413tu8s7prah"]
 
 [ext_resource type="PackedScene" uid="uid://7bq5lroe5dmf" path="res://Scenes/char.tscn" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://bkb18admxxoux" path="res://Scenes/rstzone.tscn" id="2_bo1nx"]
-[ext_resource type="PackedScene" uid="uid://bsexs6dknmn1w" path="res://Scenes/enemy.tscn" id="3_8gbba"]
-[ext_resource type="PackedScene" uid="uid://cl0yu8jhc1ilq" path="res://Scenes/sniper_enemy.tscn" id="4_jjvhh"]
+[ext_resource type="PackedScene" uid="uid://bd80xe5p0vexd" path="res://Scenes/MeleeEnemy.tscn" id="3_8gbba"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_8gbba"]
 
@@ -48,14 +47,7 @@ shape = SubResource("WorldBoundaryShape3D_8gbba")
 [node name="enemy" type="Node3D" parent="."]
 
 [node name="Enemy" parent="enemy" instance=ExtResource("3_8gbba")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.254305, 1.050003, 23.5342)
-
-[node name="Label3D" type="Label3D" parent="enemy/Enemy"]
-transform = Transform3D(-0.9797748, 0, -0.20010333, 0, 1, 0, 0.20010333, 0, -0.9797748, 0.078243256, 1.3003936, -0.12374878)
-text = "Install linkpeer"
-
-[node name="Enemy2" parent="enemy" instance=ExtResource("4_jjvhh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.753304, 2.2157717, 33.00843)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1793356, 2.3197503, 29.35458)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_8gbba")
@@ -302,3 +294,23 @@ use_collision = true
 [node name="CSGBox3D60" type="CSGBox3D" parent="NavigationRegion3D/CSGCombiner3D"]
 transform = Transform3D(3.9999998, 0, 0, 0, 14.962753, 0, 0, 0, 3.9999998, 10.758502, 3.5842986, 40.8999)
 use_collision = true
+
+[node name="NavigationLink3D" type="NavigationLink3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1840672, 0)
+start_position = Vector3(-3.4147158, -1.771255, -0.17654705)
+end_position = Vector3(2.6405792, -1.8914728, 0.12747502)
+
+[node name="NavigationLink3D2" type="NavigationLink3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1840672, 0)
+start_position = Vector3(-3.3423717, 0.6628299, 6.7259283)
+end_position = Vector3(-3.2148328, -1.624901, 0.0045468807)
+
+[node name="NavigationLink3D3" type="NavigationLink3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1840672, 0)
+start_position = Vector3(-3.3423717, 0.6628299, 6.7259283)
+end_position = Vector3(5.0161123, 6.882437, 6.3735275)
+
+[node name="NavigationLink3D4" type="NavigationLink3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1840672, 0)
+start_position = Vector3(5.0161123, 6.882437, 6.3735275)
+end_position = Vector3(10.226861, 6.997522, 1.7454929)
