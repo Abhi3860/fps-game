@@ -295,3 +295,7 @@ shape = SubResource("WorldBoundaryShape3D_8gbba")
 
 [node name="Enemy" parent="enemy" instance=ExtResource("3_8gbba")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.254305, 1.050003, 23.5342)
+
+[node name="Label3D" type="Label3D" parent="enemy/Enemy"]
+transform = Transform3D(-0.9797748, 0, -0.20010333, 0, 1, 0, 0.20010333, 0, -0.9797748, 0.078243256, 1.3003936, -0.12374878)
+text = "Install linkpeer"
