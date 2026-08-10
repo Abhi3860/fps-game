@@ -29,5 +29,7 @@ func _on_body_entered(body: Node3D) -> void:
 	if body.has_method("take_damage"):
 		var final_damage = damage * 2.0 if is_parried else damage
 		body.take_damage(final_damage)
+		if is_parried and body.is_in_group("enemy"):
+			get_tree().call_group("hud", "show_hitmarker")
 		
 	queue_free()

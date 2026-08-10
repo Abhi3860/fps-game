@@ -1,27 +1,29 @@
-[gd_scene load_steps=6 format=3 uid="uid://bsexs6dknmn1w"]
+[gd_scene load_steps=6 format=3 uid="uid://cl0yu8jhc1ilq"]
 
-[ext_resource type="Script" uid="uid://c4qtdsnsr2skg" path="res://Scenes/enemy.gd" id="1_hghv2"]
-[ext_resource type="PackedScene" uid="uid://da57lj7wpdxq0" path="res://Scenes/enemybullet.tscn" id="2_1f0kj"]
+[ext_resource type="Script" uid="uid://cck1xwu13jiht" path="res://Scenes/sniper_enemy.gd" id="1_5p4xm"]
+[ext_resource type="PackedScene" uid="uid://byug5sbvq71lo" path="res://Scenes/sniper_bullet.tscn" id="2_5uiki"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ne65n"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1f0kj"]
-albedo_color = Color(0, 1, 1, 1)
+albedo_color = Color(0.82191056, 2.623126e-06, 7.70092e-07, 1)
 emission_enabled = true
-emission = Color(0, 0, 1, 1)
+emission = Color(0.712692, 2.9359758e-06, 5.7756904e-07, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hghv2"]
+height = 2.9157104
 
 [node name="Enemy" type="CharacterBody3D" groups=["enemy"]]
-script = ExtResource("1_hghv2")
-projectile_scene = ExtResource("2_1f0kj")
+script = ExtResource("1_5p4xm")
+projectile_scene = ExtResource("2_5uiki")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.5388445, 0, 0, 0, 1, 0, 0.12849933, 0)
 mesh = SubResource("CapsuleMesh_ne65n")
 surface_material_override/0 = SubResource("StandardMaterial3D_1f0kj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1.075, 0, 0, 0, 1.075, 0, 0, 0, 1.075, 0, 0, 0)
+transform = Transform3D(1.075, 0, 0, 0, 1.075, 0, 0, 0, 1.075, 0, 0.1461525, 0)
 shape = SubResource("CapsuleShape3D_hghv2")
 
 [node name="Muzzle" type="Marker3D" parent="."]

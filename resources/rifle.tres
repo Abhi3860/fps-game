@@ -6,6 +6,10 @@
 [resource]
 script = ExtResource("1_tviba")
 projectile_scene = ExtResource("1_tv5j5")
+damage = 30.0
 spread_angle = 1.0
 magazine_size = 28
+reload_time = 4.0
+recoil_amplitude = Vector3(0.2, 0.02, 0.02)
+recoil_recovery_speed = 20.0
 metadata/_custom_type_script = "uid://bgcnm2x1p1jiu"

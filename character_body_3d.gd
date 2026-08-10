@@ -31,7 +31,8 @@ var current_health: float
 
 @export_category("Camera Settings")
 @export var mouse_sensitivity: float = 0.002
-
+var target_recoil: Vector3 = Vector3.ZERO
+var current_recoil: Vector3 = Vector3.ZERO
 
 @export_category("Weapon Settings")
 @export var projectile_scene: PackedScene
@@ -100,6 +101,7 @@ func _physics_process(delta: float) -> void:
 	handle_dash_recovery(delta)
 	handle_attack_cooldown(delta)
 	handle_reloading(delta)
+	handle_recoil(delta)
 	
 	if is_dashing:
 		process_dash(delta)
@@ -240,35 +242,79 @@ func handle_attack_input() -> void:
 			start_reload()
 
 func shoot_weapon() -> void:
-	if not current_weapon.projectile_scene or not muzzle:
+	if not current_weapon or not muzzle:
 		return
-		
-
-	var ray_origin = camera.global_position
-	var ray_end = ray_origin - camera.global_transform.basis.z * 1000.0
+	var kick = current_weapon.recoil_amplitude
+	target_recoil.x += kick.x # Upward pitch
+	target_recoil.y += randf_range(-kick.y, kick.y) # Random side-to-side yaw
+	target_recoil.z += randf_range(-kick.z, kick.z) # Random tilt/roll
 	
-	var space_state = get_world_3d().direct_space_state
-	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
-	query.exclude = [self.get_rid()]
-	var result = space_state.intersect_ray(query)
-	var target_point: Vector3 = result.position if result else ray_end
-
-
+	# Loop for every bullet being fired (1 for revolver, 8 for shotgun)
 	for i in range(current_weapon.projectiles_per_shot):
-		var projectile = current_weapon.projectile_scene.instantiate()
-		get_tree().root.add_child(projectile)
 		
-		projectile.global_position = muzzle.global_position
-		projectile.look_at(target_point, Vector3.UP)
-		
-		if projectile.get("damage") != null:
-			projectile.damage = current_weapon.damage
-		
+		# 1. Calculate the base aim direction from the camera
+		var ray_origin = camera.global_position
+		var ray_dir = -camera.global_transform.basis.z
+
+		# 2. Apply random spread directly to the camera's aim ray
 		if current_weapon.spread_angle > 0.0:
 			var random_pitch = deg_to_rad(randf_range(-current_weapon.spread_angle, current_weapon.spread_angle))
 			var random_yaw = deg_to_rad(randf_range(-current_weapon.spread_angle, current_weapon.spread_angle))
-			projectile.rotate_object_local(Vector3.RIGHT, random_pitch)
-			projectile.rotate_object_local(Vector3.UP, random_yaw)
+			ray_dir = ray_dir.rotated(camera.global_transform.basis.x, random_pitch)
+			ray_dir = ray_dir.rotated(camera.global_transform.basis.y, random_yaw)
+
+		var ray_end = ray_origin + ray_dir * 1000.0
+
+		# 3. Cast the Ray
+		var space_state = get_world_3d().direct_space_state
+		var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+		query.exclude = [self.get_rid()]
+		var result = space_state.intersect_ray(query)
+
+		# 4. Handle Hitscan vs Projectile
+		if current_weapon.is_hitscan:
+			# --- HITSCAN WEAPON ---
+			
+			# Determine exactly where the raycast ended (either hitting something, or hitting max range)
+			var hit_point = ray_end
+			
+			if result:
+				hit_point = result.position
+				var hit_collider = result.collider
+				
+				if hit_collider.has_method("take_damage"):
+					hit_collider.take_damage(current_weapon.damage)
+					if hit_collider.is_in_group("enemy"):
+						get_tree().call_group("hud", "show_hitmarker")
+						
+			# --- NEW: SPAWN THE VISUAL TRACER ---
+			if current_weapon.projectile_scene:
+				var tracer = current_weapon.projectile_scene.instantiate()
+				get_tree().root.add_child(tracer)
+				
+				# Pass the muzzle position and the final hit coordinate to the tracer script
+				if tracer.has_method("init_tracer"):
+					tracer.init_tracer(muzzle.global_position, hit_point)
+				
+		else:
+			# --- PROJECTILE WEAPON ---
+			if not current_weapon.projectile_scene:
+				continue
+
+			var target_point: Vector3 = result.position if result else ray_end
+			var projectile = current_weapon.projectile_scene.instantiate()
+			get_tree().root.add_child(projectile)
+			
+			projectile.global_position = muzzle.global_position
+			projectile.look_at(target_point, Vector3.UP)
+			
+			if projectile.get("damage") != null:
+				projectile.damage = current_weapon.damage
+				
+			if projectile.get("speed") != null:
+				projectile.speed = current_weapon.projectile_speed
+
+	# 5. Apply weapon knockback (Shotgun jumping)
 	if current_weapon.self_knockback > 0.0:
 		var kickback_dir = camera.global_transform.basis.z.normalized()
 		velocity += kickback_dir * current_weapon.self_knockback
@@ -308,19 +354,30 @@ func handle_parry_input() -> void:
 		for area in areas:
 			print("Detected: ", area.name, " | Has parry method?: ", area.has_method("parry"))
 			
-		# Scan all areas currently inside the spherical ParryZone
 		for area in parry_zone.get_overlapping_areas():
-			# Check if the area is a bullet that hasn't been parried yet
 			if area.has_method("parry") and not area.get("is_parried"):
 				
-				# Get the exact forward direction of the camera
 				var parry_dir = -camera.global_transform.basis.z.normalized()
 				
-				# Call the parry function on the bullet and pass the camera direction
 				area.parry(parry_dir)
 				parried_something = true
 		
 		if parried_something:
-			# Reward the player for a successful parry by instantly resetting their dashes!
 			current_dashes = max_dashes
 			dashes_updated.emit(current_dashes, max_dashes)
+
+func handle_recoil(delta: float) -> void:
+	var recovery = current_weapon.recoil_recovery_speed if current_weapon else 15.0
+	
+	# Safely cap the interpolation weights so they can never exceed 1.0 (100%)
+	var target_weight = min(recovery * delta, 1.0)
+	var current_weight = min((recovery * 1.5) * delta, 1.0)
+	
+	# Smoothly pull the target recoil back to zero
+	target_recoil = target_recoil.lerp(Vector3.ZERO, target_weight)
+	
+	# Smoothly move the actual camera to match the target recoil
+	current_recoil = current_recoil.lerp(target_recoil, current_weight)
+	
+	# Apply the rotation exclusively to the camera, leaving the Head free for mouse aim
+	camera.rotation = current_recoil

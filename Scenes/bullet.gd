@@ -21,5 +21,6 @@ func _on_body_entered(body: Node3D) -> void:
 	# Deal damage if the target supports it
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
+		get_tree().call_group("hud", "show_hitmarker")
 		
 	queue_free()

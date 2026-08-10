@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5f4qim2leor1"]
+
+[ext_resource type="Script" uid="uid://8c5rm3enqsx7" path="res://Scenes/hitscan_tracer.gd" id="1_ywwam"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_3noqk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3noqk"]
+albedo_color = Color(0.84930354, 0.8493033, 0, 1)
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 3.0
+
+[node name="HItscanTracer" type="Node3D"]
+script = ExtResource("1_ywwam")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = SubResource("BoxMesh_3noqk")
+surface_material_override/0 = SubResource("StandardMaterial3D_3noqk")
