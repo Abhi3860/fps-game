@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://b6l11hubhj312"]
+
+[ext_resource type="Script" uid="uid://bcoldl0bfgnr4" path="res://Scenes/health_pickup.gd" id="1_gvws8"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4oi4x"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gvws8"]
+albedo_color = Color(0, 0.627451, 0.74509805, 1)
+emission_enabled = true
+emission = Color(2.3102762e-06, 0.6263334, 0.7433697, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4oi4x"]
+
+[node name="HealthPickup" type="Area3D"]
+script = ExtResource("1_gvws8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.133, 0, 0, 0, 1, 0, 0, 0, 0.13, 0, 0, 0)
+mesh = SubResource("BoxMesh_4oi4x")
+surface_material_override/0 = SubResource("StandardMaterial3D_gvws8")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-5.813614e-09, -0.99999994, 0, 0.133, -4.371139e-08, 0, 0, 0, 0.12999998, 0, 0, 0)
+mesh = SubResource("BoxMesh_4oi4x")
+surface_material_override/0 = SubResource("StandardMaterial3D_gvws8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.92, 0, 0, 0, 0.92, 0, 0, 0, 0.92, 0, 0, 0)
+shape = SubResource("BoxShape3D_4oi4x")

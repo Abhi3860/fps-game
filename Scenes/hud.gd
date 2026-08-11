@@ -42,7 +42,7 @@ func _on_player_ammo_updated(current: int, maximum: int) -> void:
 
 func _on_player_weapon_reloading() -> void:
 	ammo_label.text = "Reloading..."
-	ammo_label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8)) # Make it dim gray
+	ammo_label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 func _on_player_health_updated(current: float, maximum: float) -> void:
 	health_bar.max_value = maximum
 	health_bar.value = current

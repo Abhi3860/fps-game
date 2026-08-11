@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://di30fl1bkvrhk"]
+[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://di30fl1bkvrhk"]
 
 [ext_resource type="Script" uid="uid://bgcnm2x1p1jiu" path="res://scripts/weapon_data.gd" id="1_7vy5u"]
 [ext_resource type="PackedScene" uid="uid://b5f4qim2leor1" path="res://Scenes/HitscanTracer.tscn" id="1_wcgjp"]
+[ext_resource type="PackedScene" uid="uid://b76uy2767nx8i" path="res://resources/Models/FBX/Weapons/19121.tscn" id="3_yx5yj"]
 
 [resource]
 script = ExtResource("1_7vy5u")
@@ -9,6 +10,7 @@ projectile_scene = ExtResource("1_wcgjp")
 damage = 75.0
 fire_rate = 1.0
 is_hitscan = true
+weapon_model = ExtResource("3_yx5yj")
 magazine_size = 6
 recoil_amplitude = Vector3(0.8, 0.02, 0.02)
 recoil_recovery_speed = 10.0

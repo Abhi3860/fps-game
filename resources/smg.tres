@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://bvbxum5vqljoa"]
+[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://bvbxum5vqljoa"]
 
 [ext_resource type="PackedScene" uid="uid://wac1g3p62jw6" path="res://Scenes/Bullet.tscn" id="1_3mo58"]
 [ext_resource type="Script" uid="uid://bgcnm2x1p1jiu" path="res://scripts/weapon_data.gd" id="1_vfff6"]
+[ext_resource type="PackedScene" uid="uid://bib3dl767xd1j" path="res://resources/Models/FBX/Weapons/Vector.fbx" id="3_xkhwm"]
 
 [resource]
 script = ExtResource("1_vfff6")
@@ -10,6 +11,7 @@ damage = 20.0
 fire_rate = 0.05
 spread_angle = 5.0
 self_knockback = 1.0
+weapon_model = ExtResource("3_xkhwm")
 magazine_size = 30
 reload_time = 3.5
 recoil_amplitude = Vector3(0.1, 0.02, 0.02)

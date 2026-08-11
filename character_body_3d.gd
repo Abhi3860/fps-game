@@ -37,7 +37,7 @@ var current_recoil: Vector3 = Vector3.ZERO
 @export_category("Weapon Settings")
 @export var projectile_scene: PackedScene
 @export var current_weapon: WeaponData
-@export var fire_rate: float = 0.2 ## Time in seconds between shots
+@export var fire_rate: float = 0.2
 @export var weapon_inventory: Array[WeaponData] = []
 
 var current_weapon_index: int = 0
@@ -45,6 +45,7 @@ var current_weapon2: WeaponData
 var weapon_ammo: Array[int] = []
 @onready var muzzle: Marker3D = $Head/Hand/Muzzle
 @onready var parry_zone: Area3D = $ParryZone
+@onready var weapon_mesh_container: Node3D = $Head/Hand/WeaponMeshContainer
 
 
 var attack_cooldown_timer: float = 0.0
@@ -249,14 +250,11 @@ func shoot_weapon() -> void:
 	target_recoil.y += randf_range(-kick.y, kick.y) # Random side-to-side yaw
 	target_recoil.z += randf_range(-kick.z, kick.z) # Random tilt/roll
 	
-	# Loop for every bullet being fired (1 for revolver, 8 for shotgun)
 	for i in range(current_weapon.projectiles_per_shot):
 		
-		# 1. Calculate the base aim direction from the camera
 		var ray_origin = camera.global_position
 		var ray_dir = -camera.global_transform.basis.z
 
-		# 2. Apply random spread directly to the camera's aim ray
 		if current_weapon.spread_angle > 0.0:
 			var random_pitch = deg_to_rad(randf_range(-current_weapon.spread_angle, current_weapon.spread_angle))
 			var random_yaw = deg_to_rad(randf_range(-current_weapon.spread_angle, current_weapon.spread_angle))
@@ -265,17 +263,14 @@ func shoot_weapon() -> void:
 
 		var ray_end = ray_origin + ray_dir * 1000.0
 
-		# 3. Cast the Ray
 		var space_state = get_world_3d().direct_space_state
 		var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
 		query.exclude = [self.get_rid()]
 		var result = space_state.intersect_ray(query)
 
-		# 4. Handle Hitscan vs Projectile
 		if current_weapon.is_hitscan:
-			# --- HITSCAN WEAPON ---
+			#hitscan
 			
-			# Determine exactly where the raycast ended (either hitting something, or hitting max range)
 			var hit_point = ray_end
 			
 			if result:
@@ -287,17 +282,15 @@ func shoot_weapon() -> void:
 					if hit_collider.is_in_group("enemy"):
 						get_tree().call_group("hud", "show_hitmarker")
 						
-			# --- NEW: SPAWN THE VISUAL TRACER ---
 			if current_weapon.projectile_scene:
 				var tracer = current_weapon.projectile_scene.instantiate()
 				get_tree().root.add_child(tracer)
 				
-				# Pass the muzzle position and the final hit coordinate to the tracer script
 				if tracer.has_method("init_tracer"):
 					tracer.init_tracer(muzzle.global_position, hit_point)
 				
 		else:
-			# --- PROJECTILE WEAPON ---
+			# projectile weapon
 			if not current_weapon.projectile_scene:
 				continue
 
@@ -314,7 +307,6 @@ func shoot_weapon() -> void:
 			if projectile.get("speed") != null:
 				projectile.speed = current_weapon.projectile_speed
 
-	# 5. Apply weapon knockback (Shotgun jumping)
 	if current_weapon.self_knockback > 0.0:
 		var kickback_dir = camera.global_transform.basis.z.normalized()
 		velocity += kickback_dir * current_weapon.self_knockback
@@ -334,6 +326,18 @@ func equip_weapon(index: int) -> void:
 	current_ammo = weapon_ammo[current_weapon_index]
 
 	ammo_updated.emit(current_ammo, current_weapon.magazine_size)
+	update_weapon_model()
+
+func update_weapon_model() -> void:
+	for child in weapon_mesh_container.get_children():
+		child.queue_free()
+		
+	if current_weapon.weapon_model:
+		var new_model = current_weapon.weapon_model.instantiate()
+		weapon_mesh_container.add_child(new_model)
+		
+		new_model.position = Vector3.ZERO
+		new_model.rotation = Vector3.ZERO
 func take_damage(amount: float) -> void:
 	current_health -= amount
 	print("player hp", current_health)
@@ -344,7 +348,7 @@ func take_damage(amount: float) -> void:
 
 func die() -> void:
 	
-	get_tree().reload_current_scene()
+	get_tree().change_scene_to_file("res://Scenes/deathscene.tscn")
 
 func handle_parry_input() -> void:
 	if Input.is_action_just_pressed("parry"):
@@ -369,15 +373,18 @@ func handle_parry_input() -> void:
 func handle_recoil(delta: float) -> void:
 	var recovery = current_weapon.recoil_recovery_speed if current_weapon else 15.0
 	
-	# Safely cap the interpolation weights so they can never exceed 1.0 (100%)
 	var target_weight = min(recovery * delta, 1.0)
 	var current_weight = min((recovery * 1.5) * delta, 1.0)
 	
-	# Smoothly pull the target recoil back to zero
 	target_recoil = target_recoil.lerp(Vector3.ZERO, target_weight)
 	
-	# Smoothly move the actual camera to match the target recoil
 	current_recoil = current_recoil.lerp(target_recoil, current_weight)
 	
-	# Apply the rotation exclusively to the camera, leaving the Head free for mouse aim
 	camera.rotation = current_recoil
+
+func heal(amount: float) -> void:
+	current_health += amount
+	
+	if current_health > max_health:
+		current_health = max_health
+	health_updated.emit(current_health, max_health)

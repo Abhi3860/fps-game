@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://413tu8s7prah"]
+[gd_scene load_steps=7 format=3 uid="uid://413tu8s7prah"]
 
 [ext_resource type="PackedScene" uid="uid://7bq5lroe5dmf" path="res://Scenes/char.tscn" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://bkb18admxxoux" path="res://Scenes/rstzone.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://csuw01l3yndxb" path="res://Scenes/enemy_spawner.tscn" id="3_8gbba"]
+[ext_resource type="PackedScene" uid="uid://b6l11hubhj312" path="res://Scenes/health_pickup.tscn" id="4_jjvhh"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_8gbba"]
 
@@ -47,7 +48,7 @@ shape = SubResource("WorldBoundaryShape3D_8gbba")
 [node name="enemy" type="Node3D" parent="."]
 
 [node name="EnemySpawner" parent="enemy" instance=ExtResource("3_8gbba")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.114582, 1.2839395, 28.092173)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.709963, 1.6448758, 30.397257)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_8gbba")
@@ -294,3 +295,8 @@ use_collision = true
 [node name="CSGBox3D60" type="CSGBox3D" parent="NavigationRegion3D/CSGCombiner3D"]
 transform = Transform3D(3.9999998, 0, 0, 0, 14.962753, 0, 0, 0, 3.9999998, 10.758502, 3.5842986, 40.8999)
 use_collision = true
+
+[node name="pickups" type="Node3D" parent="."]
+
+[node name="HealthPickup" parent="pickups" instance=ExtResource("4_jjvhh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6491919, 30.136593)

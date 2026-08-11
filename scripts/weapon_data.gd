@@ -13,6 +13,9 @@ class_name WeaponData
 @export var is_hitscan: bool = false
 @export var projectile_speed: float = 90.0
 
+@export_category("Visuals")
+@export var weapon_model: PackedScene
+
 @export_category("Ammo")
 @export var magazine_size: int = 10
 @export var reload_time: float = 1.5

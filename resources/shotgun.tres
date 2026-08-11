@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://ceqg0mqckr5lu"]
+[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://ceqg0mqckr5lu"]
 
 [ext_resource type="Script" uid="uid://bgcnm2x1p1jiu" path="res://scripts/weapon_data.gd" id="1_4l2jb"]
 [ext_resource type="PackedScene" uid="uid://wac1g3p62jw6" path="res://Scenes/Bullet.tscn" id="1_6tmgt"]
+[ext_resource type="PackedScene" uid="uid://d33ln22s8mqjk" path="res://resources/Models/FBX/Weapons/Auto Shotgun.fbx" id="3_7kleh"]
 
 [resource]
 script = ExtResource("1_4l2jb")
@@ -11,6 +12,7 @@ projectiles_per_shot = 12
 spread_angle = 10.0
 self_knockback = 7.0
 projectile_speed = 70.0
+weapon_model = ExtResource("3_7kleh")
 magazine_size = 12
 reload_time = 3.0
 recoil_amplitude = Vector3(0.5, 0.02, 0.02)
