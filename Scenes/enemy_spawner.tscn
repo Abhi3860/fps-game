@@ -1,0 +1,10 @@
+[gd_scene load_steps=5 format=3 uid="uid://csuw01l3yndxb"]
+
+[ext_resource type="Script" uid="uid://cpt7q6lq66gsh" path="res://enemy_spawner.gd" id="1_4l55s"]
+[ext_resource type="PackedScene" uid="uid://bsexs6dknmn1w" path="res://Scenes/enemy.tscn" id="2_tdwud"]
+[ext_resource type="PackedScene" uid="uid://bd80xe5p0vexd" path="res://Scenes/MeleeEnemy.tscn" id="3_gga2x"]
+[ext_resource type="PackedScene" uid="uid://cl0yu8jhc1ilq" path="res://Scenes/sniper_enemy.tscn" id="4_2cu8b"]
+
+[node name="EnemySpawner" type="Marker3D"]
+script = ExtResource("1_4l55s")
+enemy_types = Array[PackedScene]([ExtResource("2_tdwud"), ExtResource("3_gga2x"), ExtResource("4_2cu8b")])

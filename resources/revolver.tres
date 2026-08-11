@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_7vy5u")
 projectile_scene = ExtResource("1_wcgjp")
-damage = 50.0
+damage = 75.0
 fire_rate = 1.0
 is_hitscan = true
 magazine_size = 6
