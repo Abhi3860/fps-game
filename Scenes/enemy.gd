@@ -48,19 +48,21 @@ func _physics_process(delta: float) -> void:
 	if distance_to_player > attack_range or not can_see_player:
 		
 		nav_agent.target_position = player.global_position
-		
 		var next_path_position = nav_agent.get_next_path_position()
 		
-		var direction = global_position.direction_to(next_path_position)
-		direction.y = 0 
-		direction = direction.normalized()
+		var flat_global = Vector3(global_position.x, 0.0, global_position.z)
+		var flat_next = Vector3(next_path_position.x, 0.0, next_path_position.z)
+		var flat_player = Vector3(player.global_position.x, 0.0, player.global_position.z)
 		
+		var direction = Vector3.ZERO
+		
+		if not nav_agent.is_navigation_finished():
+			direction = flat_global.direction_to(flat_next)
+		else:
+			direction = flat_global.direction_to(flat_player)
+			
 		velocity.x = direction.x * move_speed
 		velocity.z = direction.z * move_speed
-		
-	else:
-		velocity.x = move_toward(velocity.x, 0, move_speed)
-		velocity.z = move_toward(velocity.z, 0, move_speed)
 		
 		if attack_cooldown <= 0.0:
 			shoot_at_player()

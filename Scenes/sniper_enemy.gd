@@ -68,9 +68,11 @@ func _physics_process(delta: float) -> void:
 		var flat_next = Vector3(next_path_position.x, 0.0, next_path_position.z)
 		var flat_player = Vector3(player.global_position.x, 0.0, player.global_position.z)
 		
-		var direction = flat_global.direction_to(flat_next)
+		var direction = Vector3.ZERO
 		
-		if flat_global.distance_squared_to(flat_next) < 0.1:
+		if not nav_agent.is_navigation_finished():
+			direction = flat_global.direction_to(flat_next)
+		else:
 			direction = flat_global.direction_to(flat_player)
 			
 		velocity.x = direction.x * move_speed

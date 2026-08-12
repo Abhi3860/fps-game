@@ -39,6 +39,7 @@ var current_recoil: Vector3 = Vector3.ZERO
 @export var current_weapon: WeaponData
 @export var fire_rate: float = 0.2
 @export var weapon_inventory: Array[WeaponData] = []
+var parry_window_timer: float = 0.0
 
 var current_weapon_index: int = 0
 var current_weapon2: WeaponData 
@@ -116,6 +117,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	handle_attack_input()
 	handle_parry_input()
+	process_parry_window(delta)
 # dash
 
 func handle_dash_input() -> void:
@@ -125,7 +127,12 @@ func handle_dash_input() -> void:
 		is_dashing = true
 		dash_time_left = dash_duration
 		
-		dash_direction = -camera.global_transform.basis.z.normalized()
+		var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+		
+		if input_dir.length() > 0:
+			dash_direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		else:
+			dash_direction = -transform.basis.z.normalized()
 		
 		velocity = dash_direction * dash_speed
 
@@ -352,23 +359,37 @@ func die() -> void:
 
 func handle_parry_input() -> void:
 	if Input.is_action_just_pressed("parry"):
+
+		parry_window_timer = 0.2 
+
+func process_parry_window(delta: float) -> void:
+	if parry_window_timer > 0.0:
+		parry_window_timer -= delta
 		var parried_something = false
-		var areas = parry_zone.get_overlapping_areas()
 		
-		for area in areas:
-			print("Detected: ", area.name, " | Has parry method?: ", area.has_method("parry"))
-			
 		for area in parry_zone.get_overlapping_areas():
 			if area.has_method("parry") and not area.get("is_parried"):
-				
 				var parry_dir = -camera.global_transform.basis.z.normalized()
-				
 				area.parry(parry_dir)
 				parried_something = true
 		
 		if parried_something:
-			current_dashes = max_dashes
-			dashes_updated.emit(current_dashes, max_dashes)
+			parry_window_timer = 0.0 
+			trigger_parry_feedback()
+
+func trigger_parry_feedback() -> void:
+
+	current_dashes = max_dashes
+	dashes_updated.emit(current_dashes, max_dashes)
+	
+	heal(max_health)
+	
+	target_recoil.x += 0.15 
+	
+	Engine.time_scale = 0.05 
+	
+	await get_tree().create_timer(0.03, true, false, true).timeout
+	Engine.time_scale = 1.0
 
 func handle_recoil(delta: float) -> void:
 	var recovery = current_weapon.recoil_recovery_speed if current_weapon else 15.0

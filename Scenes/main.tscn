@@ -48,7 +48,13 @@ shape = SubResource("WorldBoundaryShape3D_8gbba")
 [node name="enemy" type="Node3D" parent="."]
 
 [node name="EnemySpawner" parent="enemy" instance=ExtResource("3_8gbba")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.709963, 1.6448758, 30.397257)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.88981, 13.005261, 24.407894)
+
+[node name="EnemySpawner2" parent="enemy" instance=ExtResource("3_8gbba")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.946603, 1.5544816, 46.54845)
+
+[node name="EnemySpawner3" parent="enemy" instance=ExtResource("3_8gbba")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.662537, 1.5544816, 30.209599)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_8gbba")

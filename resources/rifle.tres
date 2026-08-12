@@ -1,17 +1,18 @@
 [gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://3qqbyah8wcnl"]
 
-[ext_resource type="PackedScene" uid="uid://wac1g3p62jw6" path="res://Scenes/Bullet.tscn" id="1_tv5j5"]
+[ext_resource type="PackedScene" uid="uid://b5f4qim2leor1" path="res://Scenes/HitscanTracer.tscn" id="1_jk2fe"]
 [ext_resource type="Script" uid="uid://bgcnm2x1p1jiu" path="res://scripts/weapon_data.gd" id="1_tviba"]
 [ext_resource type="PackedScene" uid="uid://bx0extywygt2r" path="res://resources/Models/FBX/Weapons/scar2.tscn" id="3_jk2fe"]
 
 [resource]
 script = ExtResource("1_tviba")
-projectile_scene = ExtResource("1_tv5j5")
+projectile_scene = ExtResource("1_jk2fe")
 damage = 30.0
 spread_angle = 1.0
+is_hitscan = true
 weapon_model = ExtResource("3_jk2fe")
 magazine_size = 28
-reload_time = 4.0
+reload_time = 2.8
 recoil_amplitude = Vector3(0.2, 0.02, 0.02)
 recoil_recovery_speed = 20.0
 metadata/_custom_type_script = "uid://bgcnm2x1p1jiu"
