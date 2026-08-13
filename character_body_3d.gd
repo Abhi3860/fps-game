@@ -4,6 +4,7 @@ signal dashes_updated(current_dashes: int, max_dashes: int)
 signal ammo_updated(current: int, maximum: int)
 signal weapon_reloading()
 signal health_updated(current: float, maximum: float)
+signal grenades_updated(current: int, maximum: int)
 
 @export_category("Player Stats")
 @export var max_health: float = 100.0
@@ -34,6 +35,13 @@ var current_health: float
 var target_recoil: Vector3 = Vector3.ZERO
 var current_recoil: Vector3 = Vector3.ZERO
 
+@export_category("Grenade Settings")
+@export var grenade_scene: PackedScene
+@export var max_grenades: int = 3
+@export var grenade_recovery_time: float = 6.0
+
+var current_grenades: int
+var grenade_recovery_timer: float = 0.0
 @export_category("Weapon Settings")
 @export var projectile_scene: PackedScene
 @export var current_weapon: WeaponData
@@ -72,6 +80,8 @@ func _ready() -> void:
 	current_health = max_health
 	dashes_updated.emit(current_dashes, max_dashes)
 	health_updated.emit(current_health, max_health)
+	current_grenades = max_grenades
+	grenades_updated.emit(current_grenades, max_grenades)
 	if current_weapon:
 		current_ammo = current_weapon.magazine_size
 		ammo_updated.emit(current_ammo, current_weapon.magazine_size)
@@ -83,7 +93,7 @@ func _ready() -> void:
 			
 	if weapon_inventory.size() > 0:
 		equip_weapon(0)
-
+	current_grenades = max_grenades
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * mouse_sensitivity)
@@ -101,6 +111,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	handle_dash_recovery(delta)
+	handle_grenade_recovery(delta)
 	handle_attack_cooldown(delta)
 	handle_reloading(delta)
 	handle_recoil(delta)
@@ -118,6 +129,7 @@ func _physics_process(delta: float) -> void:
 	handle_attack_input()
 	handle_parry_input()
 	process_parry_window(delta)
+	handle_grenade_input()
 # dash
 
 func handle_dash_input() -> void:
@@ -409,3 +421,32 @@ func heal(amount: float) -> void:
 	if current_health > max_health:
 		current_health = max_health
 	health_updated.emit(current_health, max_health)
+	
+func handle_grenade_input() -> void:
+	if Input.is_action_just_pressed("throw_grenade") and current_grenades > 0:
+		current_grenades -= 1
+		grenades_updated.emit(current_grenades, max_grenades)
+		throw_grenade()
+
+func throw_grenade() -> void:
+	if not grenade_scene or not muzzle:
+		return
+		
+	var grenade = grenade_scene.instantiate()
+	
+	get_tree().current_scene.add_child(grenade)
+	
+	grenade.global_position = muzzle.global_position
+	
+	var throw_dir = -camera.global_transform.basis.z.normalized()
+	var throw_force = (throw_dir * 25.0) + (Vector3.UP * 5.0)
+	
+	if grenade is RigidBody3D:
+		grenade.linear_velocity = throw_force
+func handle_grenade_recovery(delta: float) -> void:
+	if current_grenades < max_grenades:
+		grenade_recovery_timer += delta
+		if grenade_recovery_timer >= grenade_recovery_time:
+			current_grenades += 1
+			grenades_updated.emit(current_grenades, max_grenades)
+			grenade_recovery_timer = 0.0

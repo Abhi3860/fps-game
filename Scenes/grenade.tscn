@@ -1,0 +1,74 @@
+[gd_scene load_steps=12 format=3 uid="uid://dhni3bop1lpxe"]
+
+[ext_resource type="Script" uid="uid://5qqln2hgvnqk" path="res://Scenes/grenade.gd" id="1_v44n1"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_b5j7x"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_v44n1"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_b5j7x"]
+
+[sub_resource type="Gradient" id="Gradient_v44n1"]
+offsets = PackedFloat32Array(0, 0.5283019, 1)
+colors = PackedColorArray(1, 0.9764706, 0, 1, 0.9999998, 0.29864308, 0.11922804, 1, 0.22670749, 0.22670749, 0.22670746, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5rnft"]
+gradient = SubResource("Gradient_v44n1")
+
+[sub_resource type="Curve" id="Curve_v44n1"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_5rnft"]
+curve = SubResource("Curve_v44n1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v44n1"]
+emission_shape = 1
+emission_sphere_radius = 8.0
+spread = 180.0
+initial_velocity_min = 10.0
+initial_velocity_max = 10.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_5rnft")
+color_ramp = SubResource("GradientTexture1D_5rnft")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v44n1"]
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.77803695, 0.19566217, 0, 1)
+emission_enabled = true
+emission = Color(0.7764706, 0.19607843, 0, 1)
+emission_energy_multiplier = 3.89
+
+[sub_resource type="SphereMesh" id="SphereMesh_5rnft"]
+material = SubResource("StandardMaterial3D_v44n1")
+radius = 0.1
+height = 0.2
+
+[node name="Grenade" type="RigidBody3D"]
+continuous_cd = true
+script = ExtResource("1_v44n1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.275, 0, 0, 0, 0.275, 0, 0, 0, 0.275, 0, 0, 0)
+mesh = SubResource("SphereMesh_b5j7x")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0, 0)
+shape = SubResource("SphereShape3D_v44n1")
+
+[node name="ExplosionArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExplosionArea"]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0)
+shape = SubResource("SphereShape3D_b5j7x")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 60
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_v44n1")
+draw_pass_1 = SubResource("SphereMesh_5rnft")

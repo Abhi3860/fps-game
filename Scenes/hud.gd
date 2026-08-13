@@ -2,7 +2,7 @@ extends CanvasLayer
 
 @onready var dash_container: HBoxContainer = $MarginContainer/VBoxContainer/DashContainer
 @onready var health_bar: ProgressBar = $MarginContainer/VBoxContainer/HealthBar
-@onready var ammo_label: Label = $MarginContainer2/AmmoLabel
+@onready var ammo_label: Label = $MarginContainer2/VBoxContainer/AmmoLabel
 @onready var hitmarker: Control = $Hitmarker
 
 var dash_pips: Array = []
@@ -47,8 +47,11 @@ func _on_player_health_updated(current: float, maximum: float) -> void:
 	health_bar.max_value = maximum
 	health_bar.value = current
 	
-
-
 func show_hitmarker() -> void:
 	if hitmarker:
 		hitmarker.flash()
+
+@onready var grenade_label: Label = $MarginContainer2/VBoxContainer/GrenadeLabel
+
+func update_grenades(current: int, maximum: int) -> void:
+	grenade_label.text = "Grenades: " + str(current) + " / " + str(maximum)

@@ -1,9 +1,9 @@
 extends Marker3D
 
 @export_category("Spawner Settings")
-@export var enemy_types: Array[PackedScene] ## Add your enemy scenes here!
-@export var spawn_interval: float = 5.0 ## Time in seconds between spawns
-@export var max_enemies_in_arena: int = 15 ## The global cap for the whole map
+@export var enemy_types: Array[PackedScene]
+@export var spawn_interval: float = 5.0
+@export var max_enemies_in_arena: int = 15
 
 var timer: float = 0.0
 
