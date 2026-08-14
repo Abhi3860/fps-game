@@ -12,6 +12,8 @@ emission = Color(0, 1, 0, 1)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hghv2"]
 
 [node name="Enemy" type="CharacterBody3D" groups=["enemy"]]
+collision_layer = 4
+collision_mask = 11
 script = ExtResource("1_50p1r")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

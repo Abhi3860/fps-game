@@ -359,7 +359,6 @@ func update_weapon_model() -> void:
 		new_model.rotation = Vector3.ZERO
 func take_damage(amount: float) -> void:
 	current_health -= amount
-	print("player hp", current_health)
 	health_updated.emit(current_health, max_health)
 	
 	if current_health <= 0:
