@@ -25,13 +25,15 @@ func _ready() -> void:
 		player = players[0]
 
 func _physics_process(delta: float) -> void:
+	if not is_inside_tree():
+		return
+		
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
 		velocity.y = 0
 
-	if not player:
-		move_and_slide()
+	if not is_instance_valid(player) or not player.is_inside_tree():
 		return
 
 	attack_cooldown -= delta

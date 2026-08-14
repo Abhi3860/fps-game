@@ -19,7 +19,7 @@ color_ramp = SubResource("GradientTexture1D_14k46")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pypll"]
 transparency = 1
 vertex_color_use_as_albedo = true
-albedo_color = Color(0.8235294, 0.09019608, 0, 1)
+albedo_color = Color(0.8348785, 0, 0.09301994, 1)
 emission_enabled = true
 emission = Color(0.8235294, 0.09019608, 0, 1)
 emission_energy_multiplier = 16.0
@@ -40,7 +40,7 @@ section_segments = 2
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vlxeq"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0.7920673, 0.7919064, 3.85046e-07, 1)
+albedo_color = Color(0.6455608, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vlxeq"]
 material = SubResource("StandardMaterial3D_vlxeq")
@@ -49,6 +49,8 @@ material = SubResource("StandardMaterial3D_vlxeq")
 height = 2.1191406
 
 [node name="Bullet" type="Area3D"]
+collision_layer = 3
+collision_mask = 3
 script = ExtResource("1_cbpd8")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

@@ -31,7 +31,6 @@ var current_health: float
 @export var dash_recovery_time: float = 3.5
 
 @export_category("Camera Settings")
-@export var mouse_sensitivity: float = 0.002
 var target_recoil: Vector3 = Vector3.ZERO
 var current_recoil: Vector3 = Vector3.ZERO
 
@@ -96,8 +95,8 @@ func _ready() -> void:
 	current_grenades = max_grenades
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		rotate_y(-event.relative.x * mouse_sensitivity)
-		head.rotate_x(-event.relative.y * mouse_sensitivity)
+		rotate_y(-event.relative.x * GlobalSettings.mouse_sensitivity)
+		head.rotate_x(-event.relative.y * GlobalSettings.mouse_sensitivity)
 		head.rotation.x = clamp(head.rotation.x, -PI/2, PI/2)
 		
 	if event.is_action_pressed("ui_cancel"):

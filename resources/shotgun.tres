@@ -1,16 +1,17 @@
 [gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://ceqg0mqckr5lu"]
 
 [ext_resource type="Script" uid="uid://bgcnm2x1p1jiu" path="res://scripts/weapon_data.gd" id="1_4l2jb"]
-[ext_resource type="PackedScene" uid="uid://wac1g3p62jw6" path="res://Scenes/Bullet.tscn" id="1_6tmgt"]
+[ext_resource type="PackedScene" uid="uid://b5f4qim2leor1" path="res://Scenes/HitscanTracer.tscn" id="1_7kleh"]
 [ext_resource type="PackedScene" uid="uid://d33ln22s8mqjk" path="res://resources/Models/FBX/Weapons/Auto Shotgun.fbx" id="3_7kleh"]
 
 [resource]
 script = ExtResource("1_4l2jb")
-projectile_scene = ExtResource("1_6tmgt")
+projectile_scene = ExtResource("1_7kleh")
 fire_rate = 1.0
 projectiles_per_shot = 12
 spread_angle = 5.0
 self_knockback = 7.0
+is_hitscan = true
 projectile_speed = 70.0
 weapon_model = ExtResource("3_7kleh")
 magazine_size = 12

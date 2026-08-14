@@ -16,6 +16,7 @@ emission = Color(0, 0, 1, 1)
 collision_layer = 4
 collision_mask = 11
 script = ExtResource("1_hghv2")
+max_health = 150.0
 projectile_scene = ExtResource("2_1f0kj")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

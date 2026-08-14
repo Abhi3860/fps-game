@@ -1,10 +1,10 @@
 extends RigidBody3D
 
-@export var damage: float = 80.0
+@export var damage: float = 280.0
 @export var fuse_time: float = 2.0
 
 @export_category("Grenade Jump Settings")
-@export var player_damage_multiplier: float = 0.10 
+@export var player_damage_multiplier: float = 0.010 
 @export var player_knockback: float = 35.0 
 
 @onready var explosion_area: Area3D = $ExplosionArea

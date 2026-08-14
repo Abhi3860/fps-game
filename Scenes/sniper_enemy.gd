@@ -41,13 +41,15 @@ func has_line_of_sight() -> bool:
 	return false
 
 func _physics_process(delta: float) -> void:
+	if not is_inside_tree():
+		return
+		
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
 		velocity.y = 0
 
-	if not player:
-		move_and_slide()
+	if not is_instance_valid(player) or not player.is_inside_tree():
 		return
 	
 	var distance_to_player = global_position.distance_to(player.global_position)

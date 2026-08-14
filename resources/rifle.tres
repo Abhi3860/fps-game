@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_tviba")
 projectile_scene = ExtResource("1_jk2fe")
-damage = 30.0
+damage = 40.0
 spread_angle = 1.0
 is_hitscan = true
 weapon_model = ExtResource("3_jk2fe")

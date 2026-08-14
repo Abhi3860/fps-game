@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://c1ywf4j257sjt"]
+[gd_scene load_steps=2 format=3 uid="uid://c1ywf4j257sjt"]
+
+[ext_resource type="Script" uid="uid://c8cstglo0va07" path="res://Scenes/settings_menu.gd" id="1_icv2g"]
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_icv2g")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -49,3 +52,69 @@ min_value = 0.001
 max_value = 0.01
 step = 0.001
 value = 0.005
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ColorRect/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Jump"
+
+[node name="JumpButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Space"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ColorRect/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Dash"
+
+[node name="DashButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Shift"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="ColorRect/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "Parry"
+
+[node name="ParryButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "F"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="ColorRect/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "Reload"
+
+[node name="ReloadButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "R"
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="ColorRect/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+text = "Grenade"
+
+[node name="GrenadeButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+text = "G"
+
+[node name="BackButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Back To Menu"
+
+[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer2/JumpButton" to="." method="_on_jump_button_pressed"]
+[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer3/DashButton" to="." method="_on_dash_button_pressed"]
+[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer4/ParryButton" to="." method="_on_parry_button_pressed"]
+[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer5/ReloadButton" to="." method="_on_reload_button_pressed"]
+[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer6/GrenadeButton" to="." method="_on_grenade_button_pressed"]
+[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
