@@ -3,7 +3,8 @@ extends Control
 @onready var sens_slider: HSlider = $ColorRect/CenterContainer/VBoxContainer/HBoxContainer/HSlider
 @onready var jump_button: Button = $ColorRect/CenterContainer/VBoxContainer/HBoxContainer2/JumpButton
 @onready var dash_button: Button = $ColorRect/CenterContainer/VBoxContainer/HBoxContainer3/DashButton
-@onready var parry_button: Button = $ColorRect/CenterContainer/VBoxContainer/HBoxContainer4/ParryButton
+@onready var power_button: Button = $ColorRect/CenterContainer/VBoxContainer/HBoxContainer4/PowerButton
+
 @onready var reload_button: Button = $ColorRect/CenterContainer/VBoxContainer/HBoxContainer5/ReloadButton
 @onready var back_button: Button = $ColorRect/CenterContainer/VBoxContainer/BackButton
 @onready var grenade_button: Button = $ColorRect/CenterContainer/VBoxContainer/HBoxContainer6/GrenadeButton
@@ -25,8 +26,8 @@ func _on_jump_button_pressed() -> void:
 func _on_dash_button_pressed() -> void:
 	start_remapping("dash", dash_button)
 
-func _on_parry_button_pressed() -> void:
-	start_remapping("parry", parry_button)
+func _on_power_button_pressed() -> void:
+	start_remapping("power", power_button)
 
 func _on_reload_button_pressed() -> void:
 	start_remapping("reload", reload_button)

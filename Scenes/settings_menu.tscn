@@ -80,9 +80,9 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
-text = "Parry"
+text = "Power"
 
-[node name="ParryButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer4"]
+[node name="PowerButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 text = "F"
 
@@ -114,7 +114,7 @@ text = "Back To Menu"
 
 [connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer2/JumpButton" to="." method="_on_jump_button_pressed"]
 [connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer3/DashButton" to="." method="_on_dash_button_pressed"]
-[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer4/ParryButton" to="." method="_on_parry_button_pressed"]
+[connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer4/PowerButton" to="." method="_on_parry_button_pressed"]
 [connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer5/ReloadButton" to="." method="_on_reload_button_pressed"]
 [connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/HBoxContainer6/GrenadeButton" to="." method="_on_grenade_button_pressed"]
 [connection signal="pressed" from="ColorRect/CenterContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

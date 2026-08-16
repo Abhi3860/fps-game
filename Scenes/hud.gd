@@ -4,6 +4,7 @@ extends CanvasLayer
 @onready var health_bar: ProgressBar = $MarginContainer/VBoxContainer/HealthBar
 @onready var ammo_label: Label = $MarginContainer2/VBoxContainer/AmmoLabel
 @onready var hitmarker: Control = $Hitmarker
+@onready var power_label: Label = $PowerLabel
 
 var dash_pips: Array = []
 
@@ -62,3 +63,5 @@ func update_wave_text(wave: int) -> void:
 	wave_label.text = "WAVE " + str(wave)
 func update_countdown_text(time_left: int) -> void:
 	wave_label.text = "NEXT WAVE IN: " + str(time_left)
+func update_power_text(new_text: String) -> void:
+	power_label.text = new_text

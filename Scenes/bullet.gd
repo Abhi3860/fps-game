@@ -18,5 +18,10 @@ func _on_body_entered(body: Node3D) -> void:
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
 		get_tree().call_group("hud", "show_hitmarker")
+		var players = get_tree().get_nodes_in_group("player")
+		if players.size() > 0:
+			var player = players[0]
+			if player.is_lifesteal_active:
+				player.heal(damage * 0.5)
 		
 	queue_free()

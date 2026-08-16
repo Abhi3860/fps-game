@@ -10,6 +10,12 @@ signal grenades_updated(current: int, maximum: int)
 @export var max_health: float = 100.0
 var current_health: float
 
+@export_category("Abilities")
+@export var power_cooldown: float = 15.0
+@export var power_duration: float = 5.0
+var is_lifesteal_active: bool = false
+var power_timer: float = 0.0
+
 @export_category("Movement Settings")
 @export var base_speed: float = 14.0
 @export var acceleration: float = 12.0
@@ -93,6 +99,7 @@ func _ready() -> void:
 	if weapon_inventory.size() > 0:
 		equip_weapon(0)
 	current_grenades = max_grenades
+	get_tree().call_group("hud", "update_power_text", "POWER READY")
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * GlobalSettings.mouse_sensitivity)
@@ -107,6 +114,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 			var slot_index = event.keycode - KEY_1
 			equip_weapon(slot_index)
+	if Input.is_action_just_pressed("power") and power_timer <= 0.0:
+		is_lifesteal_active = true
+		power_timer = power_cooldown
 
 func _physics_process(delta: float) -> void:
 	handle_dash_recovery(delta)
@@ -129,6 +139,21 @@ func _physics_process(delta: float) -> void:
 	handle_parry_input()
 	process_parry_window(delta)
 	handle_grenade_input()
+	if power_timer > 0.0:
+		power_timer -= delta
+		var power_text = ""
+	#
+		if is_lifesteal_active:
+			var active_time_left = power_timer - (power_cooldown - power_duration)
+			power_text = "LIFESTEAL ACTIVE: " + str(ceili(active_time_left)) + "s"
+		elif power_timer > 0.0:
+			power_text = "POWER COOLDOWN: " + str(ceili(power_timer)) + "s"
+		else:
+			power_text = "POWER READY"
+#
+		get_tree().call_group("hud", "update_power_text", power_text)
+		if power_timer <= (power_cooldown - power_duration) and is_lifesteal_active:
+			is_lifesteal_active = false
 # dash
 
 func handle_dash_input() -> void:
@@ -299,7 +324,8 @@ func shoot_weapon() -> void:
 					hit_collider.take_damage(current_weapon.damage)
 					if hit_collider.is_in_group("enemy"):
 						get_tree().call_group("hud", "show_hitmarker")
-						
+					if is_lifesteal_active:
+						heal(current_weapon.damage * 0.5)
 			if current_weapon.projectile_scene:
 				var tracer = current_weapon.projectile_scene.instantiate()
 				get_tree().root.add_child(tracer)
