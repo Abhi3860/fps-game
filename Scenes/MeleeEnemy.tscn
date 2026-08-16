@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bd80xe5p0vexd"]
+[gd_scene load_steps=7 format=3 uid="uid://bd80xe5p0vexd"]
 
 [ext_resource type="Script" uid="uid://f6p5nxry1oxi" path="res://Scenes/melee_enemy.gd" id="1_50p1r"]
 
@@ -10,6 +10,13 @@ emission_enabled = true
 emission = Color(0, 1, 0, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hghv2"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_50p1r"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pfhbx"]
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.8668059, 0.0005989391, 0.86679995, 1)
 
 [node name="Enemy" type="CharacterBody3D" groups=["enemy"]]
 collision_layer = 4
@@ -29,3 +36,9 @@ shape = SubResource("CapsuleShape3D_hghv2")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66956913, -0.58)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="HighlightMarker" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.217, 0, 0, 0, -1.941, -1.152098e-07, 0, 2.9308285e-07, -0.763, 0, 2.4588594, 0)
+visible = false
+mesh = SubResource("PrismMesh_50p1r")
+surface_material_override/0 = SubResource("StandardMaterial3D_pfhbx")

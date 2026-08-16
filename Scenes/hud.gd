@@ -55,3 +55,10 @@ func show_hitmarker() -> void:
 
 func update_grenades(current: int, maximum: int) -> void:
 	grenade_label.text = "Grenades: " + str(current) + " / " + str(maximum)
+
+@onready var wave_label: Label = $WaveLabel
+
+func update_wave_text(wave: int) -> void:
+	wave_label.text = "WAVE " + str(wave)
+func update_countdown_text(time_left: int) -> void:
+	wave_label.text = "NEXT WAVE IN: " + str(time_left)

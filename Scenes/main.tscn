@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://413tu8s7prah"]
+[gd_scene load_steps=12 format=3 uid="uid://413tu8s7prah"]
 
 [ext_resource type="PackedScene" uid="uid://7bq5lroe5dmf" path="res://Scenes/char.tscn" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://bkb18admxxoux" path="res://Scenes/rstzone.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://b6l11hubhj312" path="res://Scenes/health_pickup.tscn" id="4_jjvhh"]
-[ext_resource type="PackedScene" uid="uid://csuw01l3yndxb" path="res://Scenes/enemy_spawner.tscn" id="4_kry3j"]
+[ext_resource type="PackedScene" uid="uid://bsexs6dknmn1w" path="res://Scenes/enemy.tscn" id="5_21xkr"]
+[ext_resource type="Script" uid="uid://d2gvjdhg7gl1p" path="res://Scenes/wave_manager.gd" id="5_kry3j"]
+[ext_resource type="PackedScene" uid="uid://bd80xe5p0vexd" path="res://Scenes/MeleeEnemy.tscn" id="6_6bp64"]
+[ext_resource type="PackedScene" uid="uid://cl0yu8jhc1ilq" path="res://Scenes/sniper_enemy.tscn" id="7_344ge"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jjvhh"]
 
@@ -33,6 +36,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8144965, 0)
 
 [node name="Area3D" parent="." node_paths=PackedStringArray("respawn_point") instance=ExtResource("2_bo1nx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -30.674173, 0)
+collision_layer = 7
+collision_mask = 7
 respawn_point = NodePath("../RespawnPoint")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
@@ -302,20 +307,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6491919, 30.136593)
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_jjgbg")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.06750476, 1.8514537, 6.7718954)
 
-[node name="spawners" type="Node3D" parent="."]
-
-[node name="EnemySpawner" parent="spawners" instance=ExtResource("4_kry3j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.426662, 1.5677354, 33.81613)
-
-[node name="EnemySpawner2" parent="spawners" instance=ExtResource("4_kry3j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.259563, 3.5752676, 45.852734)
-
-[node name="EnemySpawner3" parent="spawners" instance=ExtResource("4_kry3j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.409184, 11.829046, 25.169489)
-
-[node name="EnemySpawner4" parent="spawners" instance=ExtResource("4_kry3j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.409184, 11.829046, 25.169489)
-
 [node name="enemyBorder" type="StaticBody3D" parent="."]
 collision_layer = 8
 collision_mask = 0
@@ -335,3 +326,7 @@ shape = SubResource("BoxShape3D_21xkr")
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="enemyBorder"]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -29.69583, 2.6347046, 29.598282)
 shape = SubResource("BoxShape3D_21xkr")
+
+[node name="WaveManager" type="Node3D" parent="."]
+script = ExtResource("5_kry3j")
+enemy_scenes = Array[PackedScene]([ExtResource("5_21xkr"), ExtResource("6_6bp64"), ExtResource("7_344ge")])

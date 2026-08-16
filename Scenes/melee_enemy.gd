@@ -1,4 +1,5 @@
 extends CharacterBody3D
+@onready var highlight_marker: MeshInstance3D = $HighlightMarker
 
 @export_category("Melee Stats")
 @export var max_health: float = 120.0 
@@ -31,7 +32,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_inside_tree():
 		return
-		
+	if global_position.y < -40.0:
+		queue_free()
+		return
+	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
@@ -128,3 +132,6 @@ func take_damage(amount: float) -> void:
 	current_health -= amount
 	if current_health <= 0:
 		queue_free()
+func reveal() -> void:
+	if highlight_marker:
+		highlight_marker.visible = true

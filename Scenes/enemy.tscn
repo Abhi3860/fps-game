@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bsexs6dknmn1w"]
+[gd_scene load_steps=8 format=3 uid="uid://bsexs6dknmn1w"]
 
 [ext_resource type="Script" uid="uid://c4qtdsnsr2skg" path="res://Scenes/enemy.gd" id="1_hghv2"]
 [ext_resource type="PackedScene" uid="uid://da57lj7wpdxq0" path="res://Scenes/enemybullet.tscn" id="2_1f0kj"]
@@ -11,6 +11,13 @@ emission_enabled = true
 emission = Color(0, 0, 1, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hghv2"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_1f0kj"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_afpow"]
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.8668059, 0.0005989391, 0.86679995, 1)
 
 [node name="Enemy" type="CharacterBody3D" groups=["enemy"]]
 collision_layer = 4
@@ -31,3 +38,9 @@ shape = SubResource("CapsuleShape3D_hghv2")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66956913, -0.58)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="HighlightMarker" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.152, 0, 0, 0, -1.837, -1.0901897e-07, 0, 2.7737929e-07, -0.722, 0, 2.5246484, 0)
+visible = false
+mesh = SubResource("PrismMesh_1f0kj")
+surface_material_override/0 = SubResource("StandardMaterial3D_afpow")

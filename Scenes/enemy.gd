@@ -1,4 +1,5 @@
 extends CharacterBody3D
+@onready var highlight_marker: MeshInstance3D = $HighlightMarker
 
 @export_category("Enemy Stats")
 @export var max_health: float = 200.0
@@ -26,6 +27,10 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not is_inside_tree():
+		return
+	
+	if global_position.y < -40.0:
+		queue_free()
 		return
 		
 	if not is_on_floor():
@@ -105,3 +110,6 @@ func has_line_of_sight() -> bool:
 		return true
 		
 	return false
+func reveal() -> void:
+	if highlight_marker:
+		highlight_marker.visible = true
