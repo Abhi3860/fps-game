@@ -8,6 +8,9 @@ extends Marker3D
 var timer: float = 0.0
 
 func _ready() -> void:
+	if NetworkManager.is_multiplayer:
+		queue_free()
+		return
 	timer = randf_range(0.0, spawn_interval)
 
 func _process(delta: float) -> void:

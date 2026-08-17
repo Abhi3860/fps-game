@@ -32,7 +32,7 @@ light_energy = 0.34
 shadow_enabled = true
 
 [node name="RespawnPoint" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8144965, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.774622, 0)
 
 [node name="Area3D" parent="." node_paths=PackedStringArray("respawn_point") instance=ExtResource("2_bo1nx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -30.674173, 0)
@@ -330,3 +330,9 @@ shape = SubResource("BoxShape3D_21xkr")
 [node name="WaveManager" type="Node3D" parent="."]
 script = ExtResource("5_kry3j")
 enemy_scenes = Array[PackedScene]([ExtResource("5_21xkr"), ExtResource("6_6bp64"), ExtResource("7_344ge")])
+
+[node name="SpawnedPlayers" type="Node3D" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="SpawnedPlayers"]
+_spawnable_scenes = PackedStringArray("uid://7bq5lroe5dmf")
+spawn_path = NodePath("..")
