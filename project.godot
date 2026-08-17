@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GlobalSettings="*res://global_settings.gd"
+NetworkManager="*res://scripts/network_manager.gd"
 
 [global_group]
 
@@ -84,8 +85,3 @@ throw_grenade={
 3d_physics/layer_2="Player"
 3d_physics/layer_3="Enemy"
 3d_physics/layer_4="worldbarrier"
-
-[rendering]
-
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"

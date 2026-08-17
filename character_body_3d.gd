@@ -80,6 +80,12 @@ var dash_time_left: float = 0.0
 var is_dashing: bool = false
 var dash_direction: Vector3 = Vector3.ZERO
 
+func _enter_tree() -> void:
+	if NetworkManager.is_multiplayer:
+		var my_id = str(name).to_int()
+		set_multiplayer_authority(my_id)
+		$MultiplayerSynchronizer.set_multiplayer_authority(my_id)
+
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	current_health = max_health
@@ -100,7 +106,25 @@ func _ready() -> void:
 		equip_weapon(0)
 	current_grenades = max_grenades
 	get_tree().call_group("hud", "update_power_text", "POWER READY")
+	#multiplayer
+	if NetworkManager.is_multiplayer and not str(name).is_valid_int():
+		queue_free()
+		return
+	if NetworkManager.is_multiplayer:
+		if not is_multiplayer_authority():
+			camera.queue_free()
+			return
+		
+	camera.current = true
+	if NetworkManager.is_multiplayer and is_multiplayer_authority():
+		var random_x = randf_range(-5.0, 5.0)
+		var random_z = randf_range(-5.0, 5.0)
+		global_position = Vector3(random_x, 15.0, random_z)
+	
 func _unhandled_input(event: InputEvent) -> void:
+	if NetworkManager.is_multiplayer:
+		if not is_multiplayer_authority():
+			return
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * GlobalSettings.mouse_sensitivity)
 		head.rotate_x(-event.relative.y * GlobalSettings.mouse_sensitivity)
@@ -119,6 +143,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		power_timer = power_cooldown
 
 func _physics_process(delta: float) -> void:
+	if not is_inside_tree():
+		return
+		
+	if NetworkManager.is_multiplayer:
+		if not is_multiplayer_authority():
+			return
 	handle_dash_recovery(delta)
 	handle_grenade_recovery(delta)
 	handle_attack_cooldown(delta)
@@ -136,8 +166,8 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	handle_attack_input()
-	handle_parry_input()
-	process_parry_window(delta)
+	#handle_parry_input()
+	#process_parry_window(delta)
 	handle_grenade_input()
 	if power_timer > 0.0:
 		power_timer -= delta
@@ -286,6 +316,9 @@ func handle_attack_input() -> void:
 			start_reload()
 
 func shoot_weapon() -> void:
+	if not is_inside_tree() or not get_tree() or not get_tree().current_scene:
+		return
+
 	if not current_weapon or not muzzle:
 		return
 	var kick = current_weapon.recoil_amplitude
@@ -328,7 +361,7 @@ func shoot_weapon() -> void:
 						heal(current_weapon.damage * 0.5)
 			if current_weapon.projectile_scene:
 				var tracer = current_weapon.projectile_scene.instantiate()
-				get_tree().root.add_child(tracer)
+				get_tree().current_scene.add_child(tracer)
 				
 				if tracer.has_method("init_tracer"):
 					tracer.init_tracer(muzzle.global_position, hit_point)
@@ -393,39 +426,39 @@ func die() -> void:
 	
 	get_tree().change_scene_to_file("res://Scenes/deathscene.tscn")
 
-func handle_parry_input() -> void:
-	if Input.is_action_just_pressed("parry"):
-
-		parry_window_timer = 0.2 
-
-func process_parry_window(delta: float) -> void:
-	if parry_window_timer > 0.0:
-		parry_window_timer -= delta
-		var parried_something = false
-		
-		for area in parry_zone.get_overlapping_areas():
-			if area.has_method("parry") and not area.get("is_parried"):
-				var parry_dir = -camera.global_transform.basis.z.normalized()
-				area.parry(parry_dir)
-				parried_something = true
-		
-		if parried_something:
-			parry_window_timer = 0.0 
-			trigger_parry_feedback()
-
-func trigger_parry_feedback() -> void:
-
-	current_dashes = max_dashes
-	dashes_updated.emit(current_dashes, max_dashes)
-	
-	heal(max_health)
-	
-	target_recoil.x += 0.15 
-	
-	Engine.time_scale = 0.05 
-	
-	await get_tree().create_timer(0.03, true, false, true).timeout
-	Engine.time_scale = 1.0
+#func handle_parry_input() -> void:
+	#if Input.is_action_just_pressed("parry"):
+#
+		#parry_window_timer = 0.2 
+#
+#func process_parry_window(delta: float) -> void:
+	#if parry_window_timer > 0.0:
+		#parry_window_timer -= delta
+		#var parried_something = false
+		#
+		#for area in parry_zone.get_overlapping_areas():
+			#if area.has_method("parry") and not area.get("is_parried"):
+				#var parry_dir = -camera.global_transform.basis.z.normalized()
+				#area.parry(parry_dir)
+				#parried_something = true
+		#
+		#if parried_something:
+			#parry_window_timer = 0.0 
+			#trigger_parry_feedback()
+#
+#func trigger_parry_feedback() -> void:
+#
+	#current_dashes = max_dashes
+	#dashes_updated.emit(current_dashes, max_dashes)
+	#
+	#heal(max_health)
+	#
+	#target_recoil.x += 0.15 
+	#
+	#Engine.time_scale = 0.05 
+	#
+	#await get_tree().create_timer(0.03, true, false, true).timeout
+	#Engine.time_scale = 1.0
 
 func handle_recoil(delta: float) -> void:
 	var recovery = current_weapon.recoil_recovery_speed if current_weapon else 15.0

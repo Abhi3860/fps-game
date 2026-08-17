@@ -307,6 +307,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6491919, 30.136593)
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_jjgbg")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.06750476, 1.8514537, 6.7718954)
 
+[node name="SpawnedPlayers" type="Node3D" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://7bq5lroe5dmf")
+spawn_path = NodePath("../SpawnedPlayers")
+
 [node name="enemyBorder" type="StaticBody3D" parent="."]
 collision_layer = 8
 collision_mask = 0

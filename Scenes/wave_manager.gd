@@ -18,6 +18,9 @@ func start_intermission(duration: float) -> void:
 	is_intermission = true
 	intermission_timer = duration
 func _ready() -> void:
+	if NetworkManager.is_multiplayer:
+		queue_free()
+		return
 	start_intermission(3.0)
 
 func start_next_wave() -> void:

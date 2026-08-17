@@ -31,6 +31,9 @@ projectile_scene = ExtResource("2_4d1w0")
 current_weapon = ExtResource("3_ym4m7")
 weapon_inventory = Array[ExtResource("4_uydtg")]([ExtResource("3_ym4m7"), ExtResource("5_ljijv"), ExtResource("6_ljijv"), ExtResource("7_5mj7n")])
 
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
