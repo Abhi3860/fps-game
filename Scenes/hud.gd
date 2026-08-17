@@ -10,6 +10,12 @@ var dash_pips: Array = []
 
 func _ready() -> void:
 	var player = get_parent()
+	# A player scene is instantiated for every peer. Only the locally controlled
+	# player should contribute a screen-space HUD on this client.
+	if NetworkManager.is_multiplayer and not player.is_multiplayer_authority():
+		hide()
+		remove_from_group("hud")
+		return
 	
 	player.dashes_updated.connect(_on_player_dashes_updated)
 	setup_pips(player.max_dashes)

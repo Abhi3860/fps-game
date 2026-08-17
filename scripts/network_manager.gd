@@ -5,6 +5,7 @@ var peer = ENetMultiplayerPeer.new()
 
 var player_scene = preload("res://Scenes/char.tscn")
 var is_multiplayer: bool = false
+var is_ending_multiplayer_match: bool = false
 func host_room() -> void:
 	is_multiplayer = true
 	
@@ -51,6 +52,24 @@ func _add_player(peer_id: int) -> void:
 	
 func reset_to_singleplayer() -> void:
 	is_multiplayer = false
-	
-
+	is_ending_multiplayer_match = false
 	multiplayer.multiplayer_peer = null
+
+func end_multiplayer_match() -> void:
+	if not is_multiplayer or is_ending_multiplayer_match:
+		return
+	if multiplayer.is_server():
+		begin_multiplayer_death_screen.rpc()
+		begin_multiplayer_death_screen()
+
+@rpc("authority", "call_remote", "reliable")
+func begin_multiplayer_death_screen() -> void:
+	if is_ending_multiplayer_match:
+		return
+	is_ending_multiplayer_match = true
+	call_deferred("_finish_multiplayer_match")
+
+func _finish_multiplayer_match() -> void:
+	is_multiplayer = false
+	multiplayer.multiplayer_peer = null
+	get_tree().change_scene_to_file("res://Scenes/deathscene.tscn")

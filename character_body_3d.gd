@@ -7,7 +7,7 @@ signal health_updated(current: float, maximum: float)
 signal grenades_updated(current: int, maximum: int)
 
 @export_category("Player Stats")
-@export var max_health: float = 100.0
+@export var max_health: float = 500.0
 var current_health: float
 
 @export_category("Abilities")
@@ -103,7 +103,7 @@ func _ready() -> void:
 			weapon_ammo.append(0)
 			
 	if weapon_inventory.size() > 0:
-		equip_weapon(0)
+		_apply_equipped_weapon(0)
 	current_grenades = max_grenades
 	get_tree().call_group("hud", "update_power_text", "POWER READY")
 	#multiplayer
@@ -144,6 +144,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not is_inside_tree():
+		return
+	if NetworkManager.is_ending_multiplayer_match:
 		return
 		
 	if NetworkManager.is_multiplayer:
@@ -353,18 +355,17 @@ func shoot_weapon() -> void:
 				hit_point = result.position
 				var hit_collider = result.collider
 				
-				if hit_collider.has_method("take_damage"):
+				if hit_collider.is_in_group("player"):
+					_damage_player(hit_collider, current_weapon.damage)
+				elif hit_collider.has_method("take_damage"):
 					hit_collider.take_damage(current_weapon.damage)
 					if hit_collider.is_in_group("enemy"):
 						get_tree().call_group("hud", "show_hitmarker")
 					if is_lifesteal_active:
 						heal(current_weapon.damage * 0.5)
-			if current_weapon.projectile_scene:
-				var tracer = current_weapon.projectile_scene.instantiate()
-				get_tree().current_scene.add_child(tracer)
-				
-				if tracer.has_method("init_tracer"):
-					tracer.init_tracer(muzzle.global_position, hit_point)
+			_spawn_hitscan_tracer(muzzle.global_position, hit_point)
+			if NetworkManager.is_multiplayer:
+				show_hitscan_tracer.rpc(muzzle.global_position, hit_point)
 				
 		else:
 			# projectile weapon
@@ -388,6 +389,11 @@ func shoot_weapon() -> void:
 		var kickback_dir = camera.global_transform.basis.z.normalized()
 		velocity += kickback_dir * current_weapon.self_knockback
 func equip_weapon(index: int) -> void:
+	_apply_equipped_weapon(index)
+	if NetworkManager.is_multiplayer and is_multiplayer_authority():
+		sync_equipped_weapon.rpc(index)
+
+func _apply_equipped_weapon(index: int) -> void:
 
 	if index < 0 or index >= weapon_inventory.size() or not weapon_inventory[index]:
 		return
@@ -404,6 +410,62 @@ func equip_weapon(index: int) -> void:
 
 	ammo_updated.emit(current_ammo, current_weapon.magazine_size)
 	update_weapon_model()
+
+@rpc("authority", "call_remote", "reliable")
+func sync_equipped_weapon(index: int) -> void:
+	_apply_equipped_weapon(index)
+
+func _spawn_hitscan_tracer(start_pos: Vector3, end_pos: Vector3) -> void:
+	if not current_weapon or not current_weapon.projectile_scene:
+		return
+	var tracer = current_weapon.projectile_scene.instantiate()
+	get_tree().current_scene.add_child(tracer)
+	if tracer.has_method("init_tracer"):
+		tracer.init_tracer(start_pos, end_pos)
+
+@rpc("authority", "call_remote", "unreliable")
+func show_hitscan_tracer(start_pos: Vector3, end_pos: Vector3) -> void:
+	_spawn_hitscan_tracer(start_pos, end_pos)
+
+func _damage_player(target: Node3D, amount: float) -> void:
+	if not NetworkManager.is_multiplayer:
+		target.take_damage(amount)
+		return
+	var target_peer_id := str(target.name).to_int()
+	if target_peer_id <= 0:
+		return
+	if multiplayer.is_server():
+		_apply_player_damage(target_peer_id, amount)
+	else:
+		request_player_damage.rpc_id(1, target_peer_id, amount)
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_player_damage(target_peer_id: int, amount: float) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id := multiplayer.get_remote_sender_id()
+	if sender_id != 0 and sender_id != get_multiplayer_authority():
+		return
+	_apply_player_damage(target_peer_id, amount)
+
+func _apply_player_damage(target_peer_id: int, amount: float) -> void:
+	var target: CharacterBody3D
+	for player in get_tree().get_nodes_in_group("player"):
+		if str(player.name).to_int() == target_peer_id:
+			target = player
+			break
+	if target == null:
+		return
+	if target_peer_id == multiplayer.get_unique_id():
+		target.take_damage(amount)
+	else:
+		target.receive_player_damage.rpc_id(target_peer_id, amount)
+
+@rpc("any_peer", "call_remote", "reliable")
+func receive_player_damage(amount: float) -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+	take_damage(amount)
 
 func update_weapon_model() -> void:
 	for child in weapon_mesh_container.get_children():
@@ -423,8 +485,21 @@ func take_damage(amount: float) -> void:
 		die()
 
 func die() -> void:
-	
-	get_tree().change_scene_to_file("res://Scenes/deathscene.tscn")
+	if not NetworkManager.is_multiplayer:
+		get_tree().change_scene_to_file("res://Scenes/deathscene.tscn")
+		return
+	if multiplayer.is_server():
+		NetworkManager.end_multiplayer_match()
+	else:
+		report_player_death.rpc_id(1)
+
+@rpc("any_peer", "call_remote", "reliable")
+func report_player_death() -> void:
+	if not multiplayer.is_server():
+		return
+	if multiplayer.get_remote_sender_id() != get_multiplayer_authority():
+		return
+	NetworkManager.end_multiplayer_match()
 
 #func handle_parry_input() -> void:
 	#if Input.is_action_just_pressed("parry"):
