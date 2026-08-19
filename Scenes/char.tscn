@@ -69,6 +69,7 @@ shape = SubResource("CapsuleShape3D_ay717")
 mesh = SubResource("CapsuleMesh_sf4kk")
 
 [node name="HUD" type="CanvasLayer" parent="." groups=["hud"]]
+process_mode = 3
 script = ExtResource("2_rjfhe")
 
 [node name="MarginContainer" type="MarginContainer" parent="HUD"]
@@ -165,6 +166,75 @@ offset_bottom = -65.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 20
 
+[node name="DeathOverlay" type="ColorRect" parent="HUD"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5921569)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/DeathOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="HUD/DeathOverlay/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 86
+text = "YOU DIED"
+
+[node name="RestartButton" type="Button" parent="HUD/DeathOverlay/VBoxContainer"]
+layout_mode = 2
+text = "RESPAWN?"
+
+[node name="PausePanel" type="ColorRect" parent="HUD"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5882353)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/PausePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="HUD/PausePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 96
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="HUD/PausePanel/VBoxContainer"]
+layout_mode = 2
+text = "Resume?"
+
+[node name="MenuButton" type="Button" parent="HUD/PausePanel/VBoxContainer"]
+layout_mode = 2
+text = "Return to main menu"
+
 [node name="ParryZone" type="Area3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ParryZone"]
@@ -172,3 +242,6 @@ transform = Transform3D(4.955, 0, 0, 0, 4.955, 0, 0, 0, 4.955, 0, 0, 0)
 shape = SubResource("SphereShape3D_5mj7n")
 
 [connection signal="grenades_updated" from="." to="HUD" method="update_grenades"]
+[connection signal="pressed" from="HUD/DeathOverlay/VBoxContainer/RestartButton" to="HUD" method="_on_restart_button_pressed"]
+[connection signal="pressed" from="HUD/PausePanel/VBoxContainer/ResumeButton" to="HUD" method="_on_resume_button_pressed"]
+[connection signal="pressed" from="HUD/PausePanel/VBoxContainer/MenuButton" to="HUD" method="_on_menu_button_pressed"]

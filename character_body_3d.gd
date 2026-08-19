@@ -9,7 +9,7 @@ signal grenades_updated(current: int, maximum: int)
 @export_category("Player Stats")
 @export var max_health: float = 500.0
 var current_health: float
-
+var is_dead: bool = false
 @export_category("Abilities")
 @export var power_cooldown: float = 15.0
 @export var power_duration: float = 5.0
@@ -113,8 +113,10 @@ func _ready() -> void:
 	if NetworkManager.is_multiplayer:
 		if not is_multiplayer_authority():
 			camera.queue_free()
+			$HUD.queue_free()
 			return
-		
+
+		head.rotation.x = clamp(head.rotation.x, -PI/2, PI/2)
 	camera.current = true
 	if NetworkManager.is_multiplayer and is_multiplayer_authority():
 		var random_x = randf_range(-5.0, 5.0)
@@ -122,9 +124,13 @@ func _ready() -> void:
 		global_position = Vector3(random_x, 15.0, random_z)
 	
 func _unhandled_input(event: InputEvent) -> void:
+	if is_dead: return
 	if NetworkManager.is_multiplayer:
 		if not is_multiplayer_authority():
 			return
+	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		rotate_y(-event.relative.x * GlobalSettings.mouse_sensitivity)
+		head.rotate_x(-event.relative.y * GlobalSettings.mouse_sensitivity)
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * GlobalSettings.mouse_sensitivity)
 		head.rotate_x(-event.relative.y * GlobalSettings.mouse_sensitivity)
@@ -143,7 +149,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		power_timer = power_cooldown
 
 func _physics_process(delta: float) -> void:
-	if not is_inside_tree():
+	if not is_inside_tree() or is_dead:
 		return
 	if NetworkManager.is_ending_multiplayer_match:
 		return
@@ -302,7 +308,8 @@ func handle_reloading(delta: float) -> void:
 #attack stuff
 
 func handle_attack_input() -> void:
-	
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
+		return
 	if not current_weapon or is_reloading:
 		return
 		
@@ -485,13 +492,27 @@ func take_damage(amount: float) -> void:
 		die()
 
 func die() -> void:
-	if not NetworkManager.is_multiplayer:
-		get_tree().change_scene_to_file("res://Scenes/deathscene.tscn")
-		return
-	if multiplayer.is_server():
-		NetworkManager.end_multiplayer_match()
+	if NetworkManager.is_multiplayer:
+		is_dead = true
+		
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		
+		get_tree().call_group("hud", "show_death_screen")
 	else:
-		report_player_death.rpc_id(1)
+		get_tree().change_scene_to_file("res://Scenes/deathscene.tscn")
+
+func respawn() -> void:
+	is_dead = false
+	current_health = max_health
+	health_updated.emit(current_health, max_health)
+	
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	var random_x = randf_range(-5.0, 5.0)
+	var random_z = randf_range(-5.0, 5.0)
+	global_position = Vector3(random_x, 15.0, random_z)
+	
+	velocity = Vector3.ZERO
 
 @rpc("any_peer", "call_remote", "reliable")
 func report_player_death() -> void:

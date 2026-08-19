@@ -71,3 +71,51 @@ func update_countdown_text(time_left: int) -> void:
 	wave_label.text = "NEXT WAVE IN: " + str(time_left)
 func update_power_text(new_text: String) -> void:
 	power_label.text = new_text
+@onready var death_panel: ColorRect = $DeathOverlay
+
+
+func show_death_screen() -> void:
+	death_panel.show()
+
+
+func _on_restart_button_pressed() -> void:
+	death_panel.hide()
+	if get_parent().has_method("respawn"):
+		get_parent().respawn()
+
+#pause menu
+@onready var pause_panel: ColorRect = $PausePanel
+
+func _unhandled_input(event: InputEvent) -> void:
+	# Ignore pause inputs if the player is dead (assuming you added the is_dead variable!)
+	if get_parent().get("is_dead"):
+		return
+		
+	# Usually mapped to the Escape key in Project Settings -> Input Map
+	if event.is_action_pressed("ui_cancel"):
+		toggle_pause()
+
+func toggle_pause() -> void:
+	if pause_panel.visible:
+		pause_panel.hide()
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		
+		if not NetworkManager.is_multiplayer:
+			get_tree().paused = false
+	else:
+		pause_panel.show()
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		
+		if not NetworkManager.is_multiplayer:
+			get_tree().paused = true
+
+func _on_resume_button_pressed() -> void:
+	toggle_pause()
+
+func _on_menu_button_pressed() -> void:
+	
+	get_tree().paused = false 
+	
+	NetworkManager.reset_to_singleplayer()
+	
+	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
