@@ -49,7 +49,7 @@ text = "PLAY"
 
 [node name="MultiplayerButton" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-text = "MULTIPLAYER"
+text = "MULTIPLAYER(WIP, DOES NOT WORK RN)"
 
 [node name="SettingsButton" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
